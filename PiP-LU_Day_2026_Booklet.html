@@ -267,6 +267,36 @@
   .interlude-name{font-size:15px;font-weight:500;}
   .interlude-sub{font-size:13px;color:var(--ink-soft);}
 
+  /* ---------- topic discussion ---------- */
+  .td{
+    display:grid;grid-template-columns:64px 1fr;gap:0 18px;
+    padding:20px 0;border-bottom:1px solid var(--hair);
+  }
+  .td:last-of-type{border-bottom:none;}
+  .td-num{
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:15px;color:var(--brass-ink);padding-top:3px;
+  }
+  .td-body h3{
+    font-family:"Newsreader",Georgia,serif;
+    font-size:21px;font-weight:500;margin:0;color:var(--navy);
+    display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 12px;
+  }
+  .td-count{
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-soft);border:1px solid var(--rule);border-radius:2px;
+    padding:2px 7px;white-space:nowrap;
+  }
+  .td-people{
+    font-family:"IBM Plex Mono",ui-monospace,monospace;
+    font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--brass-ink);margin:6px 0 8px;
+  }
+  .td p{margin:0;font-size:14.5px;}
+  .td-note{font-size:13px;color:var(--ink-soft);margin:18px 0 0;}
+  @media (max-width:560px){ .td{grid-template-columns:1fr;gap:4px;} }
+
   /* ---------- abstracts ---------- */
   .abs-session{
     font-family:"IBM Plex Mono",ui-monospace,monospace;
@@ -532,6 +562,7 @@
     ol.slots li{break-inside:avoid;page-break-inside:avoid;}
     .proj h4{break-after:avoid;page-break-after:avoid;}
     .sp-head{break-after:avoid;page-break-after:avoid;}
+    .td{break-inside:avoid;page-break-inside:avoid;}
     .sp-units li,.sp-facts > div{break-inside:avoid;page-break-inside:avoid;}
     .thanks{break-after:avoid;page-break-after:avoid;}
     .proj p{orphans:3;widows:3;}
@@ -570,6 +601,7 @@
     <a href="#map">Where to go</a>
     <a href="#detailed">Detailed programme</a>
     <a href="#groups">Networking groups</a>
+    <a href="#topics">Topic discussion</a>
     <a href="#abstracts">Abstracts</a>
     <a href="#projects">Master projects</a>
     <a href="#sponsors">Sponsors</a>
@@ -712,6 +744,37 @@
     <div class="ng-round"><h3>Round 1<span class="ng-time">10:30 – 10:50</span></h3><ol class="ng-list"><li><span class="ng-room">Masklaven</span><span class="ng-names">Anastasia Christinaki · Cecilia Nilsson · Jaskaran Kaur · Junho Yoon · Yedra García · Zsófia Tóth</span></li><li><span class="ng-room">Hjortronet</span><span class="ng-names">Bárbara Maria de Andrade Costa · Célian Diblasi · Emily O&#x27;Connor · Gwenaëlle Deconninck · Jan Kreider · Pablo Macias Torres</span></li><li><span class="ng-room">Lingonet</span><span class="ng-names">Danielle Clake · Karla Münzner · Kevin Young · Masahito Tsuboi · Rickesh Patel · Sascha Müller</span></li><li><span class="ng-room">Renlaven</span><span class="ng-names">Alexander Jacobsen · Bjørn Tore Kopperud · Chloe Kaczvinsky · Sissi Lozada Gobilard · Yohan Sassi · Zachary Nolen</span></li><li><span class="ng-room">Kråkbäret</span><span class="ng-names">Anja Felmy · Daisuke Aoki · Josefin Winberg · Nicholas Planidin · Pamela Santana · Roberta Hunt</span></li><li><span class="ng-room">Ripbäret</span><span class="ng-names">Carolina Pacheco · Carolina Rodriguez · Ernő Vincze · Kalle Tunström · Rachel Stewart · Rawana Alkhalili</span></li></ol></div>
     <div class="ng-round"><h3>Round 2<span class="ng-time">10:55 – 11:15</span></h3><ol class="ng-list"><li><span class="ng-room">Masklaven</span><span class="ng-names">Anastasia Christinaki · Carolina Rodriguez · Gwenaëlle Deconninck · Masahito Tsuboi · Pamela Santana · Yohan Sassi</span></li><li><span class="ng-room">Hjortronet</span><span class="ng-names">Alexander Jacobsen · Bárbara Maria de Andrade Costa · Cecilia Nilsson · Ernő Vincze · Nicholas Planidin · Rickesh Patel</span></li><li><span class="ng-room">Lingonet</span><span class="ng-names">Anja Felmy · Chloe Kaczvinsky · Danielle Clake · Emily O&#x27;Connor · Junho Yoon · Kalle Tunström</span></li><li><span class="ng-room">Renlaven</span><span class="ng-names">Pablo Macias Torres · Rachel Stewart · Roberta Hunt · Sascha Müller · Sissi Lozada Gobilard · Zsófia Tóth</span></li><li><span class="ng-room">Kråkbäret</span><span class="ng-names">Bjørn Tore Kopperud · Jan Kreider · Josefin Winberg · Kevin Young · Rawana Alkhalili · Yedra García</span></li><li><span class="ng-room">Ripbäret</span><span class="ng-names">Carolina Pacheco · Célian Diblasi · Daisuke Aoki · Jaskaran Kaur · Karla Münzner · Zachary Nolen</span></li></ol></div>
     <p class="ng-note">Groups were set so that each room mixes divisions and keeps apart people who already share a floor, an office or a research group, while bringing together people working on close topics in <em>different</em> divisions. Six people keep the same room for both rounds — the group around them changes instead.</p>
+  </section>
+
+  <section class="part" id="topics">
+    <h2>Topic discussion</h2>
+    <p class="lede">Two informal discussions, one after the other, in Blå Hallen — 13:30 – 14:30.
+      Senior colleagues join to answer questions; you are welcome to stay for both.</p>
+
+    <article class="td">
+      <div class="td-num">1</div>
+      <div class="td-body">
+        <h3>Funding opportunities<span class="td-count">30 asked for this</span></h3>
+        <p class="td-people">Anna Runemark · Laura Grenville-Briggs Didymus · Magne Friberg</p>
+        <p>Where the money is at this career stage, what the panels are really looking for, and how
+          to pick the right call — from VR and Formas starting grants to Marie Skłodowska-Curie and
+          the Wallenberg programmes.</p>
+      </div>
+    </article>
+
+    <article class="td">
+      <div class="td-num">2</div>
+      <div class="td-body">
+        <h3>Student supervision and teaching<span class="td-count">24 and 20 asked for these</span></h3>
+        <p class="td-people">Caroline Isaksson · Fredrik Johansson · Magne Friberg</p>
+        <p>Taking on your first Master's or PhD student, what supervision actually involves day to
+          day, and how to find and build teaching at Lund University — including what counts towards
+          a teaching qualification.</p>
+      </div>
+    </article>
+
+    <p class="td-note">Questions submitted through the final survey are passed to the facilitators
+      in advance, so bring anything you would rather not ask cold.</p>
   </section>
 
   <section class="part" id="abstracts">
