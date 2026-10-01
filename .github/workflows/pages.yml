@@ -1,0 +1,44 @@
+name: Publish booklet
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'PiP-LU_Day_2026_Booklet.html'
+      - 'PiP-LU_Day_2026_Booklet.pdf'
+      - 'web/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assemble the site
+        run: |
+          mkdir -p _site
+          cp PiP-LU_Day_2026_Booklet.html _site/index.html
+          cp PiP-LU_Day_2026_Booklet.pdf  _site/booklet.pdf
+          cp web/og-image.png web/favicon.png _site/
+          ls -la _site
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,15 @@
+# Deny everything by default — this folder holds participant e-mail addresses,
+# the planning workbook and the badge sheet, none of which may be published.
+*
+
+# …then allow only what the public website needs.
+!.gitignore
+!README.md
+!PiP-LU_Day_2026_Booklet.html
+!PiP-LU_Day_2026_Booklet.pdf
+!web/
+!web/og-image.png
+!web/favicon.png
+!.github/
+!.github/workflows/
+!.github/workflows/*.yml
