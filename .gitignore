@@ -10,6 +10,7 @@
 !web/
 !web/og-image.png
 !web/favicon.png
+!web/raffle.html
 !.github/
 !.github/workflows/
 !.github/workflows/*.yml

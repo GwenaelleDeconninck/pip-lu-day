@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PiP-LU Day 2026 — raffle</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;500&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --navy:#102973; --navy-deep:#0B1D52; --navy-soft:#EDF0F8;
+    --brass:#C29648; --brass-pale:#E7D3AE; --brass-ink:#8A6626;
+    --ink:#1F2430; --soft:#6B7280; --rule:#2A3D7A; --cream:#FBF4E8;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;background:var(--navy);color:#fff;
+    font-family:"Archivo","Helvetica Neue",Arial,sans-serif;
+    display:flex;flex-direction:column;min-height:100%;
+  }
+  .bar{height:7px;background:var(--brass);flex:none;}
+
+  header{
+    flex:none;display:flex;align-items:baseline;justify-content:space-between;
+    gap:16px;padding:18px clamp(18px,4vw,48px) 0;flex-wrap:wrap;
+  }
+  header h1{
+    font-family:"Newsreader",Georgia,serif;font-weight:500;font-size:clamp(20px,2.6vw,30px);
+    margin:0;color:#fff;letter-spacing:-.01em;
+  }
+  header .meta{
+    font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--brass-pale);
+  }
+
+  main{flex:1;display:flex;align-items:center;justify-content:center;padding:clamp(16px,3vw,40px);}
+  .wrap{width:min(1180px,100%);}
+
+  /* ---------------- setup ---------------- */
+  .panel{
+    background:#fff;color:var(--ink);border-radius:4px;padding:clamp(22px,3vw,38px);
+    box-shadow:0 18px 50px rgba(0,0,0,.28);
+  }
+  .panel h2{
+    font-family:"Newsreader",Georgia,serif;font-weight:500;font-size:clamp(22px,2.4vw,30px);
+    color:var(--navy);margin:0 0 6px;
+  }
+  .panel .lede{color:var(--soft);font-size:15px;line-height:1.55;margin:0 0 22px;max-width:62ch;}
+  label{
+    display:block;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--brass-ink);margin:0 0 8px;
+  }
+  textarea{
+    width:100%;min-height:240px;resize:vertical;padding:14px 16px;font:15px/1.6 "Archivo",Arial,sans-serif;
+    color:var(--ink);background:#FBFCFE;border:1px solid #CBD3E2;border-radius:3px;
+  }
+  textarea:focus,input:focus,button:focus-visible{outline:3px solid var(--brass);outline-offset:2px;}
+  .row{display:flex;gap:18px;align-items:flex-end;flex-wrap:wrap;margin-top:20px;}
+  .row .field{flex:none;}
+  input[type=number]{
+    width:92px;padding:11px 12px;font:16px "IBM Plex Mono",monospace;
+    border:1px solid #CBD3E2;border-radius:3px;background:#FBFCFE;color:var(--ink);
+  }
+  .count{font-size:14px;color:var(--soft);margin-left:auto;align-self:center;}
+  .count b{color:var(--navy);font-size:17px;}
+
+  button{
+    font-family:"Archivo",Arial,sans-serif;font-size:15px;font-weight:600;cursor:pointer;
+    border:0;border-radius:3px;padding:13px 24px;background:var(--navy);color:#fff;
+    transition:background .15s ease;
+  }
+  button:hover{background:var(--navy-deep);}
+  button.ghost{background:transparent;color:var(--navy);border:1px solid #C3CCDE;}
+  button.ghost:hover{background:var(--navy-soft);}
+  /* the same ghost button on the dark stage needs light ink */
+  .controls .ghost{color:#E3E7F3;border-color:var(--rule);}
+  .controls .ghost:hover{background:rgba(255,255,255,.08);color:#fff;}
+  button.brass{background:var(--brass);color:#2A2008;}
+  button.brass:hover{background:#B2873C;}
+  button[disabled]{opacity:.4;cursor:not-allowed;}
+  button.big{font-size:19px;padding:18px 40px;}
+
+  /* ---------------- draw ---------------- */
+  .stage{display:grid;grid-template-columns:1fr 330px;gap:clamp(20px,4vw,56px);align-items:center;}
+  @media (max-width:900px){.stage{grid-template-columns:1fr;}}
+
+  .plate{min-height:clamp(180px,26vh,280px);display:flex;flex-direction:column;justify-content:center;}
+  .eyebrow{
+    font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:clamp(11px,1.2vw,14px);
+    letter-spacing:.2em;text-transform:uppercase;color:var(--brass-pale);margin:0 0 14px;
+  }
+  .name{
+    font-family:"Newsreader",Georgia,serif;font-weight:500;
+    font-size:clamp(38px,8.4vw,112px);line-height:1.02;letter-spacing:-.02em;
+    margin:0;color:#fff;word-break:break-word;
+  }
+  .name.rolling{color:var(--brass-pale);opacity:.92;}
+  .name.idle{color:#8FA0CE;font-size:clamp(28px,4.6vw,54px);}
+  .sub{color:#C6CDE4;font-size:clamp(14px,1.6vw,18px);margin:18px 0 0;min-height:1.4em;}
+
+  .controls{display:flex;gap:14px;flex-wrap:wrap;margin-top:clamp(20px,3vh,34px);}
+
+  .winners{background:rgba(255,255,255,.06);border-radius:4px;padding:22px 24px;border:1px solid var(--rule);}
+  .winners h3{
+    font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;font-weight:400;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--brass-pale);
+    margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid var(--rule);
+  }
+  ol.wlist{list-style:none;margin:0;padding:0;counter-reset:w;}
+  ol.wlist li{
+    counter-increment:w;display:flex;gap:12px;align-items:baseline;
+    padding:9px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:17px;
+  }
+  ol.wlist li:last-child{border-bottom:none;}
+  ol.wlist li::before{
+    content:counter(w);font-family:"IBM Plex Mono",monospace;font-size:12px;
+    color:var(--brass);min-width:16px;
+  }
+  ol.wlist li.pending{color:#7E8FC0;}
+  ol.wlist li.pending::after{content:"—";margin-left:auto;color:#5E6FA0;}
+
+  footer{
+    flex:none;padding:14px clamp(18px,4vw,48px) 22px;
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;
+    letter-spacing:.12em;text-transform:uppercase;color:#7E8FC0;
+  }
+  footer button{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    background:transparent;color:#7E8FC0;border:1px solid var(--rule);padding:7px 14px;
+  }
+  footer button:hover{background:rgba(255,255,255,.07);color:#fff;}
+  .hint{color:#6B7CAC;text-transform:none;letter-spacing:0;font-size:12px;}
+  [hidden]{display:none!important;}
+  @media (prefers-reduced-motion:reduce){.name.rolling{transition:none;}}
+</style>
+</head>
+<body>
+
+<div class="bar"></div>
+
+<header>
+  <h1>Tropikariet raffle</h1>
+  <p class="meta">PiP-LU Day 2026 · 5 November</p>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <!-- ---------- setup ---------- -->
+    <section class="panel" id="setup">
+      <h2>Who is in the hat?</h2>
+      <p class="lede">Paste the names of everyone eligible, one per line. Nothing is sent anywhere —
+        the list stays in this browser, and this page keeps no record of it. It is remembered on
+        this device, so you can set it up the night before.</p>
+
+      <label for="names">Names, one per line</label>
+      <textarea id="names" spellcheck="false" placeholder="One name per line&#10;Ada Lovelace&#10;Carl von Linné&#10;…"></textarea>
+
+      <div class="row">
+        <div class="field">
+          <label for="howmany">How many winners</label>
+          <input type="number" id="howmany" min="1" max="20" value="5">
+        </div>
+        <div class="field">
+          <button id="start" class="brass big">Start the draw</button>
+        </div>
+        <p class="count" id="setupCount"><b>0</b> names</p>
+      </div>
+    </section>
+
+    <!-- ---------- draw ---------- -->
+    <section class="stage" id="stage" hidden>
+      <div class="plate">
+        <p class="eyebrow" id="eyebrow">Ready</p>
+        <p class="name idle" id="display">Press draw</p>
+        <p class="sub" id="sub"></p>
+
+        <div class="controls">
+          <button id="draw" class="brass big">Draw winner 1</button>
+          <button id="redraw" class="ghost" hidden>Not in the room — draw again</button>
+          <button id="undo" class="ghost" hidden>Undo</button>
+        </div>
+      </div>
+
+      <aside class="winners">
+        <h3>Winners</h3>
+        <ol class="wlist" id="wlist"></ol>
+      </aside>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <span id="pool"></span>
+  <span class="hint">Space or Enter draws · five tickets to Tropikariet, Helsingborg</span>
+  <span>
+    <button id="copy" hidden>Copy winners</button>
+    <button id="back" hidden>Edit list</button>
+    <button id="reset" hidden>Start over</button>
+  </span>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var KEY = "pip-lu-raffle-v1";
+  var $ = function (id) { return document.getElementById(id); };
+
+  var pool = [], winners = [], target = 5, rolling = false, lastDrawn = null;
+
+  /* a real random index, not Math.random */
+  function pick(n) {
+    if (n <= 0) return 0;
+    var max = Math.floor(0xFFFFFFFF / n) * n, v;
+    var a = new Uint32Array(1);
+    do { crypto.getRandomValues(a); v = a[0]; } while (v >= max);
+    return v % n;
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify({
+        names: $("names").value, howmany: $("howmany").value,
+        pool: pool, winners: winners, started: !$("stage").hidden
+      }));
+    } catch (e) { /* private window, or storage blocked — the draw still works */ }
+  }
+
+  function load() {
+    var raw = null;
+    try { raw = localStorage.getItem(KEY); } catch (e) { return; }
+    if (!raw) return;
+    try {
+      var s = JSON.parse(raw);
+      $("names").value = s.names || "";
+      $("howmany").value = s.howmany || 5;
+      if (s.started && s.pool && s.pool.length + (s.winners || []).length) {
+        pool = s.pool; winners = s.winners || []; target = parseInt(s.howmany, 10) || 5;
+        showStage();
+      }
+      countNames();
+    } catch (e) { /* corrupt entry, start clean */ }
+  }
+
+  function parseNames() {
+    var seen = {}, out = [];
+    $("names").value.split(/\r?\n/).forEach(function (line) {
+      var n = line.replace(/\s+/g, " ").trim();
+      if (!n) return;
+      var k = n.toLowerCase();
+      if (seen[k]) return;          // a name pasted twice should not get two chances
+      seen[k] = 1; out.push(n);
+    });
+    return out;
+  }
+
+  function countNames() {
+    var n = parseNames().length;
+    $("setupCount").innerHTML = "<b>" + n + "</b> name" + (n === 1 ? "" : "s");
+    $("start").disabled = n === 0;
+  }
+
+  function renderWinners() {
+    var html = "";
+    for (var i = 0; i < target; i++) {
+      html += winners[i]
+        ? "<li>" + esc(winners[i]) + "</li>"
+        : '<li class="pending">to draw</li>';
+    }
+    $("wlist").innerHTML = html;
+    $("pool").textContent = pool.length + " still in the hat · " +
+                            winners.length + " of " + target + " drawn";
+    $("copy").hidden = winners.length === 0;
+    $("undo").hidden = winners.length === 0 || rolling;
+  }
+
+  function esc(s) {
+    return s.replace(/[&<>"']/g, function (c) {
+      return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+    });
+  }
+
+  function showStage() {
+    $("setup").hidden = true;
+    $("stage").hidden = false;
+    $("back").hidden = false; $("reset").hidden = false;
+    renderWinners();
+    updateDrawButton();
+  }
+
+  function updateDrawButton() {
+    var done = winners.length >= target || pool.length === 0;
+    $("draw").disabled = done || rolling;
+    $("draw").textContent = done ? "All drawn" : "Draw winner " + (winners.length + 1);
+    if (winners.length >= target) {
+      $("eyebrow").textContent = "That is all five";
+      $("sub").textContent = "Thank you to Tropikariet in Helsingborg for the tickets.";
+      $("display").textContent = "Congratulations";
+      $("display").className = "name";
+    } else if (pool.length === 0) {
+      $("eyebrow").textContent = "The hat is empty";
+      $("sub").textContent = "Add more names with “Edit list”.";
+    }
+  }
+
+  function roll() {
+    if (rolling || !pool.length || winners.length >= target) return;
+    rolling = true; lastDrawn = null;
+    $("draw").disabled = true; $("redraw").hidden = true; $("undo").hidden = true;
+    $("eyebrow").textContent = "Drawing winner " + (winners.length + 1) + " of " + target;
+    $("sub").textContent = "";
+    var disp = $("display");
+    disp.className = "name rolling";
+
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var ticks = reduce ? 1 : 26 + pick(10);
+    var i = 0, delay = 45;
+
+    (function step() {
+      disp.textContent = pool[pick(pool.length)];
+      i++;
+      if (i >= ticks) return land();
+      if (i > ticks * 0.62) delay = delay * 1.19;   // ease into the result
+      setTimeout(step, delay);
+    })();
+  }
+
+  function land() {
+    var idx = pick(pool.length);
+    var name = pool.splice(idx, 1)[0];
+    winners.push(name);
+    lastDrawn = name;
+    rolling = false;
+    var disp = $("display");
+    disp.className = "name";
+    disp.textContent = name;
+    $("eyebrow").textContent = "Winner " + winners.length + " of " + target;
+    $("sub").textContent = "One ticket to Tropikariet. Come and collect it.";
+    $("redraw").hidden = winners.length === 0;
+    renderWinners();
+    updateDrawButton();
+    save();
+  }
+
+  /* they have to be in the room — so a no-show is removed, not put back */
+  function redraw() {
+    if (rolling || !winners.length) return;
+    winners.pop();
+    $("redraw").hidden = true;
+    renderWinners();
+    updateDrawButton();
+    save();
+    roll();
+  }
+
+  function undo() {
+    if (rolling || !winners.length) return;
+    var name = winners.pop();
+    pool.push(name);
+    $("display").textContent = "Press draw";
+    $("display").className = "name idle";
+    $("eyebrow").textContent = "Ready";
+    $("sub").textContent = name + " is back in the hat.";
+    $("redraw").hidden = true;
+    renderWinners();
+    updateDrawButton();
+    save();
+  }
+
+  /* ---- wiring ---- */
+  $("names").addEventListener("input", function () { countNames(); save(); });
+  $("howmany").addEventListener("input", save);
+
+  $("start").addEventListener("click", function () {
+    pool = parseNames();
+    if (!pool.length) return;
+    target = Math.max(1, Math.min(20, parseInt($("howmany").value, 10) || 5));
+    if (target > pool.length) target = pool.length;
+    winners = [];
+    showStage();
+    save();
+  });
+
+  $("draw").addEventListener("click", roll);
+  $("redraw").addEventListener("click", redraw);
+  $("undo").addEventListener("click", undo);
+
+  $("back").addEventListener("click", function () {
+    $("stage").hidden = true; $("setup").hidden = false;
+    $("back").hidden = true; $("reset").hidden = true; $("copy").hidden = true;
+    $("pool").textContent = "";
+    countNames(); save();
+  });
+
+  $("reset").addEventListener("click", function () {
+    if (winners.length && !confirm("Clear the winners and put everyone back in the hat?")) return;
+    pool = parseNames(); winners = [];
+    $("display").textContent = "Press draw";
+    $("display").className = "name idle";
+    $("eyebrow").textContent = "Ready";
+    $("sub").textContent = "";
+    $("redraw").hidden = true;
+    renderWinners(); updateDrawButton(); save();
+  });
+
+  $("copy").addEventListener("click", function () {
+    var txt = winners.map(function (n, i) { return (i + 1) + ". " + n; }).join("\n");
+    var done = function () { $("copy").textContent = "Copied"; setTimeout(function () {
+      $("copy").textContent = "Copy winners"; }, 1600); };
+    if (navigator.clipboard) { navigator.clipboard.writeText(txt).then(done, done); }
+    else { window.prompt("Winners:", txt); }
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if ($("stage").hidden) return;
+    var tag = (e.target.tagName || "").toLowerCase();
+    if (tag === "textarea" || tag === "input" || tag === "button") return;
+    if (e.key === " " || e.key === "Enter") { e.preventDefault(); roll(); }
+  });
+
+  load();
+  countNames();
+})();
+</script>
+</body>
+</html>

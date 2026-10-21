@@ -34,7 +34,9 @@ jobs:
           cp PiP-LU_Day_2026_Booklet.html _site/index.html
           cp PiP-LU_Day_2026_Booklet.pdf  _site/booklet.pdf
           cp web/og-image.png web/favicon.png _site/
-          ls -la _site
+          mkdir -p _site/raffle
+          cp web/raffle.html _site/raffle/index.html
+          ls -la _site _site/raffle
 
       - uses: actions/upload-pages-artifact@v3
         with:
