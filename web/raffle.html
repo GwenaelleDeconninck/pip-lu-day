@@ -290,23 +290,29 @@
     $("setup").hidden = true;
     $("stage").hidden = false;
     $("back").hidden = false; $("reset").hidden = false;
+    if (winners.length >= target && winners.length) {
+      $("display").textContent = winners[winners.length - 1];
+      $("display").className = "name";
+      sayFinished();
+      $("redraw").hidden = false;
+    }
     renderWinners();
     updateDrawButton();
   }
 
+  /* only the button — the last winner's name must stay on screen */
   function updateDrawButton() {
     var done = winners.length >= target || pool.length === 0;
     $("draw").disabled = done || rolling;
-    $("draw").textContent = done ? "All drawn" : "Draw winner " + (winners.length + 1);
-    if (winners.length >= target) {
-      $("eyebrow").textContent = "That is all five";
-      $("sub").textContent = "Thank you to Tropikariet in Helsingborg for the tickets.";
-      $("display").textContent = "Congratulations";
-      $("display").className = "name";
-    } else if (pool.length === 0) {
-      $("eyebrow").textContent = "The hat is empty";
-      $("sub").textContent = "Add more names with “Edit list”.";
-    }
+    $("draw").textContent = winners.length >= target ? "All drawn"
+                          : pool.length === 0 ? "The hat is empty"
+                          : "Draw winner " + (winners.length + 1);
+  }
+
+  function sayFinished() {
+    $("eyebrow").textContent = "Winner " + winners.length + " of " + target +
+                               " — that is all of them";
+    $("sub").textContent = "Thank you to Tropikariet in Helsingborg for the tickets.";
   }
 
   function roll() {
@@ -340,8 +346,12 @@
     var disp = $("display");
     disp.className = "name";
     disp.textContent = name;
-    $("eyebrow").textContent = "Winner " + winners.length + " of " + target;
-    $("sub").textContent = "One ticket to Tropikariet. Come and collect it.";
+    if (winners.length >= target) {
+      sayFinished();
+    } else {
+      $("eyebrow").textContent = "Winner " + winners.length + " of " + target;
+      $("sub").textContent = "One ticket to Tropikariet. Come and collect it.";
+    }
     $("redraw").hidden = winners.length === 0;
     renderWinners();
     updateDrawButton();
@@ -356,6 +366,10 @@
     renderWinners();
     updateDrawButton();
     save();
+    if (!pool.length) {
+      $("sub").textContent = "Nobody left in the hat — add names with “Edit list”.";
+      return;
+    }
     roll();
   }
 
